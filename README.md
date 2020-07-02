@@ -11,6 +11,7 @@ The ETL pipeline should extract songs and user log data from S3, loads it into R
 - plugins/operators/load_dimension.py -  Defines the LoadDimensionOperator
 - plugins/operators/load_fact.py -  Defines the LoadFactOperator
 - plugins/operators/stage_redshift.py -  Defines the StageToRedshiftOperator
+- create_tables.sql - used to create fact and dimension tables
 
 # Execution Instructions
 - After you have updated the DAG, you will need to run /opt/airflow/start.sh command to start the Airflow webserver. 
