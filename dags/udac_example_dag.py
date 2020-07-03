@@ -27,6 +27,13 @@ dag = DAG('udac_example_dag',
 
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
+create_redshift_tables = PostgresOperator(
+    task_id="create_tables",
+    dag=dag,
+    postgres_conn_id="redshift",
+    sql="create_tables.sql"
+)
+
 stage_events_to_redshift = StageToRedshiftOperator(
     task_id='Stage_events',
     dag=dag
@@ -70,8 +77,9 @@ run_quality_checks = DataQualityOperator(
 end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
 
 # Start DAG tasks execution
-start_operator >> stage_events_to_redshift
-start_operator >> stage_songs_to_redshift
+start_operator >> create_redshift_tables
+create_redshift_tables >> stage_events_to_redshift
+create_redshift_tables >> stage_songs_to_redshift
 stage_events_to_redshift >> load_songplays_table
 stage_songs_to_redshift >> load_songplays_table
 load_songplays_table >> load_song_dimension_table
